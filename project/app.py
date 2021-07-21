@@ -15,9 +15,11 @@ def index():
 def cmp_page():
 
 
-    data = pd.read_csv('static/data/list_interface_test.csv')
+    data = pd.read_csv('static/data/list_interface.csv')
+    data.drop('Unnamed: 0', axis=1, inplace=True)
     firm_id = [1161049216, 1199729421, 160269670, 127671566, 1052240272, 1232004753, 1151775635, 789380757, 790724630,
                1160048160]
+
     data = data[data['entid'].isin(firm_id)]
     data = data.to_dict(orient='records')
 
@@ -111,6 +113,18 @@ def focus():
     data = data.sample(10).to_dict(orient='records')
 
     return jsonify(data=data)
+
+
+@app.route('/loanDetails')
+def loanDetails():
+
+    target_firm = request.args.get('firm')
+    with open('static/data/loanDetails.pkl', 'rb') as fr:
+        data = pickle.load(fr)
+    target_data = data[int(target_firm)]
+
+    return jsonify(data=target_data)
+
 
 
 if __name__ == '__main__':
